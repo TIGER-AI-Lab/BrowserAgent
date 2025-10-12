@@ -9,7 +9,7 @@
       :root { --bg:#0b0f14; --panel:#0f1620; --text:#e6edf3; --muted:#9fb3c8; --link:#79c0ff; --accent:#2ea043; }
       * { box-sizing: border-box; }
       body { margin:0; font-family: -apple-system, system-ui, Segoe UI, Roboto, Helvetica, Arial, sans-serif; background:var(--bg); color:var(--text); line-height:1.6; }
-      header { padding: 28px 20px; border-bottom: 1px solid #1e2633; background: linear-gradient(180deg, #0d141d, #0b0f14 60%); }
+      header { padding: 28px 20px 18px; border-bottom: 1px solid #1e2633; background: linear-gradient(180deg, #0d141d, #0b0f14 60%); }
       .wrap { max-width: 980px; margin: 0 auto; padding: 0 16px; }
       h1 { margin: 0 0 6px; font-size: 28px; }
       h2 { margin: 28px 0 12px; font-size: 20px; }
@@ -25,17 +25,44 @@
       footer { color:#8aa1b8; font-size: 14px; padding: 24px 20px 40px; border-top: 1px solid #1e2633; margin-top: 28px; }
       code, .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; font-size: 0.95em; }
       .note { color: var(--muted); font-size: 0.95em; }
+      .small { font-size: 0.9em; }
+      .authors-bar { display:flex; gap:8px; overflow-x:auto; padding:8px 0 4px; margin: 8px 0 4px; }
+      .authors-bar::-webkit-scrollbar { height:6px; }
+      .authors-bar::-webkit-scrollbar-thumb { background:#223049; border-radius:999px; }
+      .author-pill { background:#0e1622; border:1px solid #1f2a3a; color:#d2deea; border-radius:999px; padding:6px 10px; white-space:nowrap; }
+      .author-pill sup { font-size: 0.75em; color:#9fb3c8; }
+      .affils { color:#9fb3c8; margin-top: 6px; }
     </style>
   </head>
   <body>
     <header>
       <div class="wrap">
         <h1>BrowserAgent — Learning Human‑Inspired Web Browsing for Effective Information Search</h1>
-        <p>
-          This page hosts and summarizes the paper. View the PDF directly
+        <div class="authors-bar" aria-label="Authors">
+          <span class="author-pill">Tao Yu<sup>1,2</sup></span>
+          <span class="author-pill">Zhengbo Zhang<sup>1,2</sup></span>
+          <span class="author-pill">Zhiheng Lyu<sup>2</sup></span>
+          <span class="author-pill">Junhao Gong<sup>3</sup></span>
+          <span class="author-pill">Hongzhu Yi<sup>1</sup></span>
+          <span class="author-pill"><strong>Xinming Wang<sup>1</sup></strong></span>
+          <span class="author-pill"><strong>Yuxuan Zhou<sup>4</sup></strong></span>
+          <span class="author-pill"><strong>Jiabing Yang<sup>1</sup></strong></span>
+          <span class="author-pill"><strong>Ping Nie<sup>3</sup></strong></span>
+          <span class="author-pill"><strong>Yan Huang<sup>1</sup></strong></span>
+          <span class="author-pill"><strong>Wenhu Chen<sup>2</sup></strong></span>
+        </div>
+        <div class="affils mono">
+          <sup>1</sup> Chinese Academy of Sciences · <sup>2</sup> University of Waterloo · <sup>3</sup> Peking University ·
+          <sup>4</sup> Tsinghua University · <sup>5</sup> Independent Researcher
+        </div>
+        <p class="mono small">yutao2025@ia.ac.cn · wenhuchen@uwaterloo.ca</p>
+        <p class="note small">Tao Yu and Zhengbo Zhang: work done during the internship at University of Waterloo.</p>
+
+        <p style="margin-top:10px;">
+          View the paper PDF
           <a href="./BrowserAgent__Learning_Human_Inspired_Web_Browsing_for_Effective_Information_Search_ICLR_2026_.pdf">here</a>.
         </p>
-        <div>
+        <div style="margin-top:6px;">
           <span class="tag">Web Agents</span>
           <span class="tag">Information Retrieval</span>
           <span class="tag">Human‑Inspired Interaction</span>
@@ -45,60 +72,13 @@
 
     <main class="wrap" style="padding: 20px 0 28px;">
       <div class="grid">
-        <section class="panel">
-          <h2>Authors</h2>
-          <p>
-            Tao Yu<sup>1,2</sup> (Work done during the internship at University of Waterloo),
-            Zhengbo Zhang<sup>1,2</sup> (Work done during the internship at University of Waterloo),
-            Zhiheng Lyu<sup>2</sup>,
-            Junhao Gong<sup>3</sup>,
-            Hongzhu Yi<sup>1</sup>
-          </p>
-          <p>
-            <strong>Xinming Wang<sup>1</sup>, Yuxuan Zhou<sup>4</sup>, Jiabing Yang<sup>1</sup>, Ping Nie<sup>3</sup>, Yan Huang<sup>1</sup>, Wenhu Chen<sup>2</sup></strong>
-          </p>
-          <p class="mono">
-            <sup>1</sup> Chinese Academy of Sciences, <sup>2</sup> University of Waterloo, <sup>3</sup> Peking University,<br/>
-            <sup>4</sup> Tsinghua University, <sup>5</sup> Independent Researcher
-          </p>
-          <p class="mono">yutao2025@ia.ac.cn, wenhuchen@uwaterloo.ca</p>
-        </section>
-        <section class="panel">
+        <section class="panel" id="overview">
           <h2>Overview</h2>
           <p>
             The paper introduces <strong>BrowserAgent</strong>, a browser‑capable agent that aims to
             emulate human browsing behaviors to make information search more effective and reliable.
             It focuses on practical, end‑to‑end navigation: reading pages, following links, issuing
             queries, and synthesizing answers from web content.
-          </p>
-
-          <h2>Key Ideas</h2>
-          <ul>
-            <li>Model web browsing as a sequence of perception → planning → action steps.</li>
-            <li>Ground decisions in the rendered page content and UI structure.</li>
-            <li>Favor human‑like strategies: targeted queries, skim‑then‑drill‑down, source triangulation.</li>
-            <li>Prioritize answerability and attribution using on‑page evidence.</li>
-          </ul>
-
-          <h2>Contributions</h2>
-          <ul>
-            <li>A browser‑native agent design oriented around human‑inspired search tactics.</li>
-            <li>End‑to‑end workflow for reading, navigating, and aggregating web information.</li>
-            <li>Qualitative guidance for reliable, source‑aware answers with minimal hallucination.</li>
-          </ul>
-
-          <h2>Method (High‑Level)</h2>
-          <ul>
-            <li>Perception: extract salient snippets, links, and page structure from the DOM.</li>
-            <li>Planning: form next steps (refine query, follow link, scroll, backtrack) to reduce uncertainty.</li>
-            <li>Action: execute safe browser actions; repeat until answer quality is sufficient.</li>
-            <li>Attribution: cite and cross‑check sources before finalizing an answer.</li>
-          </ul>
-
-          <h2>Notes</h2>
-          <p>
-            For full details, metrics, and ablations, please refer to the PDF below. This summary
-            provides a high‑level orientation without claiming specifics beyond the paper.
           </p>
         </section>
 
@@ -118,6 +98,43 @@
             <p class="mono">@misc{browseragent, title={BrowserAgent: Learning Human‑Inspired Web Browsing for Effective Information Search}, year={2026}, note={URL: project page}}</p>
           </section>
         </aside>
+
+        <section class="panel" id="key-ideas">
+          <h2>Key Ideas</h2>
+          <ul>
+            <li>Model web browsing as a sequence of perception → planning → action steps.</li>
+            <li>Ground decisions in the rendered page content and UI structure.</li>
+            <li>Favor human‑like strategies: targeted queries, skim‑then‑drill‑down, source triangulation.</li>
+            <li>Prioritize answerability and attribution using on‑page evidence.</li>
+          </ul>
+        </section>
+
+        <section class="panel" id="contributions">
+          <h2>Contributions</h2>
+          <ul>
+            <li>A browser‑native agent design oriented around human‑inspired search tactics.</li>
+            <li>End‑to‑end workflow for reading, navigating, and aggregating web information.</li>
+            <li>Qualitative guidance for reliable, source‑aware answers with minimal hallucination.</li>
+          </ul>
+        </section>
+
+        <section class="panel" id="method">
+          <h2>Method (High‑Level)</h2>
+          <ul>
+            <li>Perception: extract salient snippets, links, and page structure from the DOM.</li>
+            <li>Planning: form next steps (refine query, follow link, scroll, backtrack) to reduce uncertainty.</li>
+            <li>Action: execute safe browser actions; repeat until answer quality is sufficient.</li>
+            <li>Attribution: cite and cross‑check sources before finalizing an answer.</li>
+          </ul>
+        </section>
+
+        <section class="panel" id="notes">
+          <h2>Notes</h2>
+          <p>
+            For full details, metrics, and ablations, please refer to the PDF below. This summary
+            provides a high‑level orientation without claiming specifics beyond the paper.
+          </p>
+        </section>
       </div>
     </main>
 
