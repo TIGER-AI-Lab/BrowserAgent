@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>BrowserAgent — Learning Human‑Inspired Web Browsing for Effective Information Search</title>
+    <meta name="description" content="Summary and PDF for the BrowserAgent paper: Learning Human‑Inspired Web Browsing for Effective Information Search.">
+    <style>
+      :root { --bg:#0b0f14; --panel:#0f1620; --text:#e6edf3; --muted:#9fb3c8; --link:#79c0ff; --accent:#2ea043; }
+      * { box-sizing: border-box; }
+      body { margin:0; font-family: -apple-system, system-ui, Segoe UI, Roboto, Helvetica, Arial, sans-serif; background:var(--bg); color:var(--text); line-height:1.6; }
+      header { padding: 28px 20px; border-bottom: 1px solid #1e2633; background: linear-gradient(180deg, #0d141d, #0b0f14 60%); }
+      .wrap { max-width: 980px; margin: 0 auto; padding: 0 16px; }
+      h1 { margin: 0 0 6px; font-size: 28px; }
+      h2 { margin: 28px 0 12px; font-size: 20px; }
+      p { margin: 0 0 12px; color: var(--muted); }
+      a { color: var(--link); text-decoration: none; }
+      a:hover { text-decoration: underline; }
+      .tag { display:inline-block; padding:2px 8px; border:1px solid #263244; border-radius:999px; color:#c2d1e2; font-size:12px; margin-right:6px; }
+      .panel { background: var(--panel); border:1px solid #1e2633; border-radius:10px; padding:16px; }
+      ul { margin: 8px 0 0 18px; color: var(--muted); }
+      .grid { display:grid; grid-template-columns: 1fr; gap:16px; }
+      @media (min-width: 960px) { .grid { grid-template-columns: 1.1fr 0.9fr; } }
+      .pdf { aspect-ratio: 8.5/11; width: 100%; background:#0a0e13; border:1px solid #1e2633; border-radius:10px; }
+      footer { color:#8aa1b8; font-size: 14px; padding: 24px 20px 40px; border-top: 1px solid #1e2633; margin-top: 28px; }
+      code, .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; font-size: 0.95em; }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div class="wrap">
+        <h1>BrowserAgent — Learning Human‑Inspired Web Browsing for Effective Information Search</h1>
+        <p>
+          This page hosts and summarizes the paper. View the PDF directly
+          <a href="./BrowserAgent__Learning_Human_Inspired_Web_Browsing_for_Effective_Information_Search_ICLR_2026_.pdf">here</a>.
+        </p>
+        <div>
+          <span class="tag">Web Agents</span>
+          <span class="tag">Information Retrieval</span>
+          <span class="tag">Human‑Inspired Interaction</span>
+        </div>
+      </div>
+    </header>
+
+    <main class="wrap" style="padding: 20px 0 28px;">
+      <div class="grid">
+        <section class="panel">
+          <h2>Overview</h2>
+          <p>
+            The paper introduces <strong>BrowserAgent</strong>, a browser‑capable agent that aims to
+            emulate human browsing behaviors to make information search more effective and reliable.
+            It focuses on practical, end‑to‑end navigation: reading pages, following links, issuing
+            queries, and synthesizing answers from web content.
+          </p>
+
+          <h2>Key Ideas</h2>
+          <ul>
+            <li>Model web browsing as a sequence of perception → planning → action steps.</li>
+            <li>Ground decisions in the rendered page content and UI structure.</li>
+            <li>Favor human‑like strategies: targeted queries, skim‑then‑drill‑down, source triangulation.</li>
+            <li>Prioritize answerability and attribution using on‑page evidence.</li>
+          </ul>
+
+          <h2>Contributions</h2>
+          <ul>
+            <li>A browser‑native agent design oriented around human‑inspired search tactics.</li>
+            <li>End‑to‑end workflow for reading, navigating, and aggregating web information.</li>
+            <li>Qualitative guidance for reliable, source‑aware answers with minimal hallucination.</li>
+          </ul>
+
+          <h2>Method (High‑Level)</h2>
+          <ul>
+            <li>Perception: extract salient snippets, links, and page structure from the DOM.</li>
+            <li>Planning: form next steps (refine query, follow link, scroll, backtrack) to reduce uncertainty.</li>
+            <li>Action: execute safe browser actions; repeat until answer quality is sufficient.</li>
+            <li>Attribution: cite and cross‑check sources before finalizing an answer.</li>
+          </ul>
+
+          <h2>Notes</h2>
+          <p>
+            For full details, metrics, and ablations, please refer to the PDF below. This summary
+            provides a high‑level orientation without claiming specifics beyond the paper.
+          </p>
+        </section>
+
+        <aside>
+          <section class="panel">
+            <h2>Paper</h2>
+            <object class="pdf" type="application/pdf" data="./BrowserAgent__Learning_Human_Inspired_Web_Browsing_for_Effective_Information_Search_ICLR_2026_.pdf">
+              <p>
+                PDF embed not supported in this browser. You can
+                <a href="./BrowserAgent__Learning_Human_Inspired_Web_Browsing_for_Effective_Information_Search_ICLR_2026_.pdf">download the paper</a> instead.
+              </p>
+            </object>
+          </section>
+
+          <section class="panel">
+            <h2>Citation</h2>
+            <p class="mono">@misc{browseragent, title={BrowserAgent: Learning Human‑Inspired Web Browsing for Effective Information Search}, year={2026}, note={URL: project page}}</p>
+          </section>
+        </aside>
+      </div>
+    </main>
+
+    <footer class="wrap">
+      <div>Project page for the BrowserAgent paper. Last updated <span id="ts"></span>.</div>
+    </footer>
+
+    <script>
+      document.getElementById('ts').textContent = new Date().toISOString().slice(0,10);
+    </script>
+  </body>
+  </html>
+
