@@ -25,6 +25,8 @@
       .btn { display:inline-block; padding:8px 12px; border:1px solid #263244; border-radius:8px; background:#0e1622; color:#cfe3fb; }
       .btn:hover { background:#0f1b2a; text-decoration:none; }
       .pdf-actions { display:flex; gap:8px; flex-wrap:wrap; }
+      .teaser { width:100%; display:block; border:1px solid #1e2633; border-radius:10px; background:#0a0e13; }
+      .teaser:hover { filter:brightness(1.04); }
       footer { color:#8aa1b8; font-size: 14px; padding: 24px 20px 40px; border-top: 1px solid #1e2633; margin-top: 28px; }
       code, .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; font-size: 0.95em; }
       .note { color: var(--muted); font-size: 0.95em; }
@@ -84,11 +86,10 @@
         <aside>
           <section class="panel">
             <h2>Paper</h2>
-            <div class="pdf-actions">
-              <a class="btn" href="https://raw.githubusercontent.com/TIGER-AI-Lab/BrowserAgent/main/BrowseAgent.pdf" target="_blank" rel="noopener">Open PDF in new tab</a>
-              <a class="btn" href="https://github.com/TIGER-AI-Lab/BrowserAgent/blob/main/BrowseAgent.pdf" target="_blank" rel="noopener">View on GitHub</a>
-            </div>
-            <p class="note small">Inline PDF embed disabled to avoid auto‑download and blank renders.</p>
+            <a href="https://raw.githubusercontent.com/TIGER-AI-Lab/BrowserAgent/main/BrowseAgent.pdf" download="BrowseAgent.pdf">
+              <img src="./teaser.png" alt="BrowserAgent paper teaser" class="teaser" />
+            </a>
+            <p class="note small">Click the image to download the PDF.</p>
           </section>
 
           <section class="panel">
