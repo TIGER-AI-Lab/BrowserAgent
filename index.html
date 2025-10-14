@@ -19,8 +19,9 @@
       .tag { display:inline-block; padding:2px 8px; border:1px solid #263244; border-radius:999px; color:#c2d1e2; font-size:12px; margin-right:6px; }
       .panel { background: var(--panel); border:1px solid #1e2633; border-radius:10px; padding:16px; }
       ul { margin: 8px 0 0 18px; color: var(--muted); }
-      .grid { display:grid; grid-template-columns: 1fr; gap:16px; }
-      @media (min-width: 960px) { .grid { grid-template-columns: 1.1fr 0.9fr; } }
+      .grid { display:block; }
+      .grid > * { margin-bottom:16px; }
+      @media (min-width: 960px) { .grid { display:block; } }
       .pdf { aspect-ratio: 8.5/11; width: 100%; background:#0a0e13; border:1px solid #1e2633; border-radius:10px; }
       .btn { display:inline-block; padding:8px 12px; border:1px solid #263244; border-radius:8px; background:#0e1622; color:#cfe3fb; }
       .btn:hover { background:#0f1b2a; text-decoration:none; }
@@ -96,10 +97,15 @@
 
           <section class="panel">
             <h2>Citation</h2>
-            <p class="mono">
-            ```
-            ```
-            </p>
+            <pre class="mono"><code>@misc{yu2025browseragent,
+  title={BrowserAgent — Learning Human-Inspired Web Browsing for Effective Information Search},
+  author={Tao Yu and Zhengbo Zhang and Zhiheng Lyu and Junhao Gong and Hongzhu Yi and Xinming Wang and Yuxuan Zhou and Jiabing Yang and Ping Nie and Yan Huang and Wenhu Chen},
+  year={2025},
+  eprint={2510.10666},
+  archivePrefix={arXiv},
+  primaryClass={cs.AI},
+  url={https://arxiv.org/abs/2510.10666}
+}</code></pre>
             <p class="small">PDF: <a href="https://arxiv.org/pdf/2510.10666" target="_blank" rel="noopener">arXiv:2510.10666</a></p>
           </section>
         </aside>
