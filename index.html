@@ -32,6 +32,7 @@
       .caption { color:#9fb3c8; font-size: 0.9em; margin-top:8px; }
       footer { color:#8aa1b8; font-size: 14px; padding: 24px 20px 40px; border-top: 1px solid #1e2633; margin-top: 28px; }
       code, .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; font-size: 0.95em; }
+      pre.mono { overflow-x: auto; white-space: pre; padding: 12px; background:#0a0e13; border:1px solid #1e2633; border-radius:8px; }
       .note { color: var(--muted); font-size: 0.95em; }
       .small { font-size: 0.9em; }
       .authors-bar { display:flex; gap:8px; overflow-x:auto; padding:8px 0 4px; margin: 8px 0 4px; }
@@ -86,29 +87,7 @@
           </p>
         </section>
 
-        <aside>
-          <section class="panel">
-            <h2>Paper</h2>
-            <a href="https://raw.githubusercontent.com/TIGER-AI-Lab/BrowserAgent/main/BrowseAgent.pdf" download="BrowseAgent.pdf">
-              <img src="./teaser.png" alt="BrowserAgent paper teaser" class="teaser" />
-            </a>
-            <p class="note small">Click the image to download the PDF.</p>
-          </section>
-
-          <section class="panel">
-            <h2>Citation</h2>
-            <pre class="mono"><code>@misc{yu2025browseragent,
-  title={BrowserAgent — Learning Human-Inspired Web Browsing for Effective Information Search},
-  author={Tao Yu and Zhengbo Zhang and Zhiheng Lyu and Junhao Gong and Hongzhu Yi and Xinming Wang and Yuxuan Zhou and Jiabing Yang and Ping Nie and Yan Huang and Wenhu Chen},
-  year={2025},
-  eprint={2510.10666},
-  archivePrefix={arXiv},
-  primaryClass={cs.AI},
-  url={https://arxiv.org/abs/2510.10666}
-}</code></pre>
-            <p class="small">PDF: <a href="https://arxiv.org/pdf/2510.10666" target="_blank" rel="noopener">arXiv:2510.10666</a></p>
-          </section>
-        </aside>
+        
 
         <section class="panel" id="key-ideas">
           <h2>Key Ideas</h2>
@@ -181,6 +160,28 @@
             For full details, metrics, and ablations, please refer to the PDF below. This summary
             provides a high‑level orientation without claiming specifics beyond the paper.
           </p>
+        </section>
+
+        <section class="panel" id="citation">
+          <h2>Citation</h2>
+          <pre class="mono"><code>@misc{yu2025browseragent,
+  title={BrowserAgent — Learning Human-Inspired Web Browsing for Effective Information Search},
+  author={Tao Yu and Zhengbo Zhang and Zhiheng Lyu and Junhao Gong and Hongzhu Yi and Xinming Wang and Yuxuan Zhou and Jiabing Yang and Ping Nie and Yan Huang and Wenhu Chen},
+  year={2025},
+  eprint={2510.10666},
+  archivePrefix={arXiv},
+  primaryClass={cs.AI},
+  url={https://arxiv.org/abs/2510.10666}
+}</code></pre>
+          <p class="small">PDF: <a href="https://arxiv.org/pdf/2510.10666" target="_blank" rel="noopener">arXiv:2510.10666</a></p>
+        </section>
+
+        <section class="panel" id="paper">
+          <h2>Paper</h2>
+          <a href="https://raw.githubusercontent.com/TIGER-AI-Lab/BrowserAgent/main/BrowseAgent.pdf" download="BrowseAgent.pdf">
+            <img src="./teaser.png" alt="BrowserAgent paper teaser" class="teaser" />
+          </a>
+          <p class="note small">Click the image to download the PDF.</p>
         </section>
       </div>
     </main>
