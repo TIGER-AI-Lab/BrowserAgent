@@ -27,6 +27,8 @@
       .pdf-actions { display:flex; gap:8px; flex-wrap:wrap; }
       .teaser { width:100%; display:block; border:1px solid #1e2633; border-radius:10px; background:#0a0e13; }
       .teaser:hover { filter:brightness(1.04); }
+      .figure { width:100%; display:block; border:1px solid #1e2633; border-radius:10px; background:#0a0e13; }
+      .caption { color:#9fb3c8; font-size: 0.9em; margin-top:8px; }
       footer { color:#8aa1b8; font-size: 14px; padding: 24px 20px 40px; border-top: 1px solid #1e2633; margin-top: 28px; }
       code, .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; font-size: 0.95em; }
       .note { color: var(--muted); font-size: 0.95em; }
@@ -98,6 +100,7 @@
             ```
             ```
             </p>
+            <p class="small">PDF: <a href="https://arxiv.org/pdf/2510.10666" target="_blank" rel="noopener">arXiv:2510.10666</a></p>
           </section>
         </aside>
 
@@ -128,6 +131,42 @@
             <li>Action: execute safe browser actions; repeat until answer quality is sufficient.</li>
             <li>Attribution: cite and cross‑check sources before finalizing an answer.</li>
           </ul>
+        </section>
+
+        <section class="panel" id="differences">
+          <h2>Differences vs. Prior Agents</h2>
+          <p>
+            The figure highlights how <strong>BrowserAgent</strong> differs from common web agents. It
+            emphasizes grounding decisions in rendered page content, human‑inspired planning routines
+            (skim‑then‑drill‑down, targeted querying, backtracking), and source‑aware answer synthesis
+            to reduce hallucination and improve reliability.
+          </p>
+          <img src="./difference.png" alt="Key differences between BrowserAgent and prior web agents" class="figure" />
+          <p class="caption">Figure: Conceptual comparison of BrowserAgent with prior agent designs.</p>
+        </section>
+
+        <section class="panel" id="pipeline">
+          <h2>Training and Inference Pipeline</h2>
+          <p>
+            The pipeline illustrates the end‑to‑end flow: perceiving the current page, planning the
+            next action, and executing browser operations during inference, as well as the
+            training/feedback signals that shape these behaviors. The design encourages robust,
+            human‑like browsing strategies that generalize across tasks and sites.
+          </p>
+          <img src="./train-inference.png" alt="Training and inference pipeline of BrowserAgent" class="figure" />
+          <p class="caption">Figure: High‑level training and inference workflow for BrowserAgent.</p>
+        </section>
+
+        <section class="panel" id="results">
+          <h2>Experimental Results</h2>
+          <p>
+            We summarize results across representative web‑based information‑seeking tasks. BrowserAgent
+            demonstrates strong end‑to‑end performance and improved answerability with attribution,
+            reflecting gains from human‑inspired planning and evidence grounding.
+          </p>
+          <img src="./results.png" alt="Experimental results comparing BrowserAgent to baselines" class="figure" />
+          <p class="caption">Figure: Summary of experimental results across benchmarks.</p>
+          <p class="small note">For full metrics and setup details, please refer to the paper PDF.</p>
         </section>
 
         <section class="panel" id="notes">
