@@ -1,0 +1,154 @@
+# export CUDA_VISIBLE_DEVICES=4,5,6,7
+set -x
+dataset_name=wikiQA
+train_data=$(pwd)/data/$dataset_name/train.parquet
+val_data=$(pwd)/data/$dataset_name/test.parquet
+model_name=/data/zhiheng/cogito/base_models/qwen2.5-3b-1epoch-hard
+rl_alg=grpo # gae(ppo) or grpo, if grpo, then better set n>1 otherwise the group norm can not be effective
+
+n_nodes=1
+n=4
+# If there is 4 GPU
+# n_gpus_per_node=2
+#batch_size=16
+#ppo_mini_batch_size=4
+
+# If there is 2 GPU
+n_gpus_per_node=2
+batch_size=8
+ppo_mini_batch_size=2
+
+max_prompt_length=2048
+max_response_length=5120
+max_obs_length=2048
+temperature=1.0
+top_p=1.0
+strategy="fsdp_agent" # remove _agent for normal verl behavior
+action_stop_tokens="\`\`\`\n"
+max_turns=1
+kl_loss_coef=0.0
+kl_coef=0
+entropy_coeff=0
+kl_loss_type=low_var_kl
+lr=1e-6
+reward_manager=wikiRL
+ppo_micro_batch_size_per_gpu=1
+log_prob_micro_batch_size_per_gpu=2
+tensor_model_parallel_size=2
+gpu_memory_utilization=0.8 # higher gpu_memory_utilization will likely cause the vllm to OOM and get stuck, so set it to a lower value like 0.4 or 0.5
+do_offload=True # control actor's fsdp.[param|optimizer]_offload and actor_rollout_ref.rollout.fsdp.[param|optimizer]_offload; if gpu_memory_utilization is set to > 0.6, then do_offload should be set to True otherwise it will cause OOM
+use_dynamic_bsz=True # faster
+ulysses_sequence_parallel_size=1 # set to 1 for normal verl behavior, otherwise it will cause OOM
+
+## === added by Zhiheng (new constants) ===
+max_action_length=512
+rolling_with_prompt=False
+call_tool_first=True
+truncate_obs_side=left       # required by current code
+truncate_response_side=left
+min_action_num=5
+max_start_length=1536        # system prompt ≈800+, keep headroom
+valid_actions="[]"           # e.g. [answer,python] if needed
+## === end added ===
+
+model_pretty_name=$(echo $model_name | tr '/' '_' | tr '[:upper:]' '[:lower:]')
+run_name_prefix="FromAcecoder"
+run_name_postfix=""
+run_name="${run_name_prefix}-${reward_manager}-${strategy}-${model_pretty_name}-${rl_alg}-n${n}-b${batch_size}-t${temperature}-lr${lr}${run_name_postfix}"
+export VERL_RUN_ID=$run_name
+
+# temp file for action tokens as verl cannot pass special strs as params
+mkdir -p $(pwd)/tmp
+action_stop_tokens_file="$(pwd)$(mktemp)"
+echo "$action_stop_tokens" | tee $action_stop_tokens_file
+echo "action_stop_tokens_file=$action_stop_tokens_file"
+
+host=$(hostname -I | awk '{print $1}')
+# port=$(shuf -i 30000-31000 -n 1)
+port=30815
+tool_server_url=http://$host:$port/get_observation
+#python -m verl_tool.servers.ray_serve --host $host --port $port --tool_type "firejail_python_code" --workers_per_tool $n &
+#server_pid=$!
+echo "Server (pid=$server_pid) started at $tool_server_url"
+
+
+
+#ray job submit --address="http://$host:8265" \
+#    --runtime-env=verl_tool/trainer/runtime_env.yaml \
+#    -- \
+PYTHONUNBUFFERED=1 python3 -m verl_tool.trainer.main_ppo \
+    algorithm.adv_estimator=$rl_alg \
+    data.train_files=$train_data \
+    data.val_files=$val_data \
+    data.train_batch_size=$batch_size \
+    data.val_batch_size=$batch_size \
+    data.max_prompt_length=$max_prompt_length \
+    data.max_response_length=$max_response_length \
+    data.truncation='right' \
+    reward_model.reward_manager=$reward_manager \
+    actor_rollout_ref.model.path=$model_name \
+    actor_rollout_ref.model.enable_gradient_checkpointing=True \
+    actor_rollout_ref.actor.optim.lr=$lr \
+    actor_rollout_ref.model.use_remove_padding=True \
+    actor_rollout_ref.actor.checkpoint.contents=['model','optimizer','extra','hf_model'] \
+    actor_rollout_ref.actor.ppo_mini_batch_size=$ppo_mini_batch_size \
+    actor_rollout_ref.actor.ppo_micro_batch_size_per_gpu=$ppo_micro_batch_size_per_gpu \
+    actor_rollout_ref.actor.use_dynamic_bsz=$use_dynamic_bsz \
+    actor_rollout_ref.actor.use_kl_loss=True \
+    actor_rollout_ref.actor.strategy=$strategy \
+    actor_rollout_ref.actor.kl_loss_coef=$kl_loss_coef \
+    actor_rollout_ref.actor.kl_loss_type=$kl_loss_type \
+    actor_rollout_ref.actor.entropy_coeff=$entropy_coeff \
+    actor_rollout_ref.actor.fsdp_config.param_offload=$do_offload \
+    actor_rollout_ref.actor.fsdp_config.optimizer_offload=$do_offload \
+    actor_rollout_ref.actor.ulysses_sequence_parallel_size=$ulysses_sequence_parallel_size \
+    +actor_rollout_ref.agent.tool_server_url=$tool_server_url \
+    +actor_rollout_ref.agent.max_prompt_length=$max_prompt_length \
+    +actor_rollout_ref.agent.max_response_length=$max_response_length \
+    +actor_rollout_ref.agent.max_start_length=$max_start_length \
+    +actor_rollout_ref.agent.max_obs_length=$max_obs_length \
+    +actor_rollout_ref.agent.max_turns=$max_turns \
+    +actor_rollout_ref.agent.num_gpus=$n_gpus_per_node \
+    +actor_rollout_ref.agent.action_stop_tokens=$action_stop_tokens_file \
+    +actor_rollout_ref.agent.max_action_length=$max_action_length \
+    +actor_rollout_ref.agent.rolling_with_prompt=$rolling_with_prompt \
+    +actor_rollout_ref.agent.call_tool_first=$call_tool_first \
+    +actor_rollout_ref.agent.min_action_num=$min_action_num \
+    +actor_rollout_ref.agent.truncate_response_side=$truncate_response_side \
+    +actor_rollout_ref.agent.truncate_obs_side=$truncate_obs_side \
+    +actor_rollout_ref.agent.valid_actions=$valid_actions \
+    actor_rollout_ref.rollout.tensor_model_parallel_size=$tensor_model_parallel_size \
+    actor_rollout_ref.rollout.log_prob_micro_batch_size_per_gpu=$log_prob_micro_batch_size_per_gpu \
+    actor_rollout_ref.rollout.name=vllm \
+    actor_rollout_ref.rollout.gpu_memory_utilization=$gpu_memory_utilization \
+    actor_rollout_ref.rollout.temperature=$temperature \
+    actor_rollout_ref.rollout.top_p=$top_p \
+    actor_rollout_ref.rollout.top_k=-1 \
+    actor_rollout_ref.rollout.n=$n \
+    actor_rollout_ref.rollout.log_prob_use_dynamic_bsz=$use_dynamic_bsz \
+    actor_rollout_ref.rollout.max_num_seqs=1024 \
+    actor_rollout_ref.ref.log_prob_use_dynamic_bsz=$use_dynamic_bsz \
+    actor_rollout_ref.ref.fsdp_config.param_offload=$do_offload \
+    actor_rollout_ref.ref.log_prob_micro_batch_size_per_gpu=$log_prob_micro_batch_size_per_gpu \
+    actor_rollout_ref.ref.ulysses_sequence_parallel_size=$ulysses_sequence_parallel_size \
+    critic.optim.lr=1e-5 \
+    critic.strategy=$strategy \
+    critic.model.path=$model_name \
+    critic.ppo_micro_batch_size_per_gpu=$ppo_micro_batch_size_per_gpu \
+    critic.ulysses_sequence_parallel_size=$ulysses_sequence_parallel_size \
+    algorithm.kl_ctrl.kl_coef=$kl_coef \
+    trainer.logger=['console','wandb'] \
+    trainer.project_name=$reward_manager \
+    trainer.experiment_name=$run_name \
+    trainer.val_before_train=True \
+    trainer.default_hdfs_dir=null \
+    trainer.n_gpus_per_node=$n_gpus_per_node \
+    trainer.nnodes=$n_nodes \
+    +trainer.remove_previous_ckpt_in_save=True \
+    trainer.save_freq=10 \
+    trainer.test_freq=10 \
+    trainer.total_epochs=10
+
+
+#pkill -P -9 $server_pid
+#kill -9 $kill $server_pid

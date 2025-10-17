@@ -13,8 +13,10 @@ cd BrowserAgent
 
 **Install the inference package:**
 ```bash
+conda create -n browseragent python=3.10
+conda activate browseragent
 pip install -r requirement.txt
-cd Browseragent/verl-tool
+cd verl-tool
 pip install -e .
 pip install -e verl
 pip install vllm==0.8.4
@@ -29,28 +31,17 @@ pip uninstall uvloop
 Download [📊 BrowserAgent-Data](https://huggingface.co/datasets/TIGER-Lab/BrowserAgent-Data) and place it in the data folder, the final structure should look like this:
 
 ```
-data
+benchmark
 -- | nq
 -- | hotpot
 -- | 2wiki
--- | pop
+-- | popqa
 -- | musique
 -- | bamboogle
 ```
 
 
-
-#### 3. **SFT and RFT model:**
-
-Download [📊 BroswerAgent-SFT](https://huggingface.co/TIGER-Lab/BrowserAgent-SFT) or [📊 BroswerAgent-RFT](https://huggingface.co/TIGER-Lab/BrowserAgent-RFT), and deploy using vllm.
-
-```bash
-cd Browseragent
-bash deploy_vllm.sh
-```
-
-
-#### 4. **Deploy the wiki webpage:**
+#### 3. **Deploy the wiki webpage:**
 
 We adopt the WikiPedia from [WebArena](https://github.com/web-arena-x/webarena/tree/main/environment_docker#wikipedia-website).
 
@@ -98,30 +89,88 @@ location /wiki/ {
     sub_filter 'src="/wikipedia_en_all_maxi_2022-05/' 'src="/wiki/wikipedia_en_all_maxi_2022-05/';
 ```
 
+
+#### 4. **SFT and RFT model:**
+
+Download [📊 BroswerAgent-SFT](https://huggingface.co/TIGER-Lab/BrowserAgent-SFT) or [📊 BroswerAgent-RFT](https://huggingface.co/TIGER-Lab/BrowserAgent-RFT), and deploy using vllm.
+
+```bash
+Terminal 1:
+conda activate browseragent
+cd Browseragent
+bash deploy_vllm.sh /path/to/your/model
+```
+
+
+
 #### 5. **Data generation and model evaluation:**
 
 For SFT data generation
 
 ```bash
+Terminal 2:
+conda activate browseragent
 cd Browseragent
-bash verl-tool\examples\train\wikiRL\wikiRL_server_reina.sh
-python data_generate.py
+bash verl-tool\examples\train\wikiRL\wikiRL_server.sh
+
+Terminal 3:
+conda activate browseragent
+cd Browseragent
+python data_generate.py /path/to/your/output_file /path/to/your/sft_data_path
 ```
+
+Then you can run the following code to convert the generated data into the ms-swift training format.
+
+```bash
+conda activate browseragent
+cd Browseragent
+python judge_sft.py /path/to/your/sft_data_path /path/to/your/previous_step_output_file /path/to/your/output_file
+python swift_switch.py /path/to/your/previous_step_output_file /path/to/your/output_file
+```
+
 
 For RFT data generation
 
 ```bash
+Terminal 2:
+conda activate browseragent
 cd Browseragent
-bash verl-tool\examples\train\wikiRL\wikiRL_server_reina.sh
-python data_generate_rft.py
+bash verl-tool\examples\train\wikiRL\wikiRL_server.sh
+
+Terminal 3:
+conda activate browseragent
+cd Browseragent
+python data_generate_rft.py /path/to/your/output_file /path/to/your/rft_data_path
 ```
 
-For data generation
+Then you can run the following code to convert the generated data into the ms-swift training format.
 
 ```bash
+conda activate browseragent
 cd Browseragent
-bash verl-tool\examples\train\wikiRL\wikiRL_server_reina.sh
+python judge_rft.py /path/to/your/sft_data_path /path/to/your/previous_step_output_file /path/to/your/output_file
+python swift_switch.py /path/to/your/previous_step_output_file /path/to/your/output_file
+```
+
+For model evaluation
+
+```bash
+Terminal 2:
+conda activate browseragent
+cd Browseragent
+bash verl-tool\examples\train\wikiRL\wikiRL_server.sh
+
+Terminal 3:
+conda activate browseragent
+cd Browseragent
 python run_model.py
+```
+
+Then you can run the following code to calculate the rule-based accuracy.
+
+```bash
+conda activate browseragent
+cd Browseragent
 python val_answer.py
 ```
 

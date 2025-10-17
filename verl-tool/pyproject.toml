@@ -1,0 +1,26 @@
+[project]
+name = "verl-tool"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "fire>=0.7.0",
+    "psutils>=3.3.9",
+    "timeout-decorator>=0.5.0",
+    "pyext"
+]
+
+[tool.setuptools]
+packages = ["verl_tool"]  # Explicitly specify only the verl_tool package
+
+[project.optional-dependencies]
+tool_browser = [
+    "mini_webarena @ git+https://github.com/cogito233/mini_webarena.git",
+]
+acecoder = [
+    "AceCoder @ git+https://github.com/TIGER-AI-Lab/AceCoder.git@dev",
+]
+torl = [
+    "math-verify",
+]

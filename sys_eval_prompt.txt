@@ -1,0 +1,6 @@
+You are an agent tasked with determining the correctness of an answer. Given a question, its corresponding
+ground truth, and an answer, you need to decide whether the answer is correct. If it is correct, please output
+"yes" otherwise output "no".
+question: {}
+ground truth: {}
+answer: {}
