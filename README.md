@@ -26,7 +26,7 @@ pip uninstall uvloop
 
 #### 2. Data preparation
 
-Download [📊 BrowserAgent eval data](https://huggingface.co/datasets/TIGER-Lab/BrowserAgent-Data) and place it in the data folder, the final structure should look like this:
+Download [📊 BrowserAgent-Data](https://huggingface.co/datasets/TIGER-Lab/BrowserAgent-Data) and place it in the data folder, the final structure should look like this:
 
 ```
 data
