@@ -6,8 +6,8 @@ An agent that can interact with browser to complete tasks
 
 #### 1. **Clone this repository and navigate to the folder:**
 ```bash
-git clone https://github.com/yutao1024/Browseragent.git
-cd Browseragent
+git clone https://github.com/TIGER-AI-Lab/BrowserAgent.git
+cd BrowserAgent
 ```
 
 
@@ -26,7 +26,7 @@ pip uninstall uvloop
 
 #### 2. Data preparation
 
-Download [📊 Browseragent eval data](https://huggingface.co/datasets/kirito011024/broswer_training_data) and place it in the data folder, the final structure should look like this:
+Download [📊 BrowserAgent eval data](https://huggingface.co/datasets/TIGER-Lab/BrowserAgent-Data) and place it in the data folder, the final structure should look like this:
 
 ```
 data
@@ -42,7 +42,7 @@ data
 
 #### 3. **SFT and RFT model:**
 
-Download [📊 Brosweragent](https://huggingface.co/datasets/kirito011024/broswer_training_data), and deploy using vllm.
+Download [📊 BroswerAgent-SFT](https://huggingface.co/TIGER-Lab/BrowserAgent-SFT) or [📊 BroswerAgent-RFT](https://huggingface.co/TIGER-Lab/BrowserAgent-RFT), and deploy using vllm.
 
 ```bash
 cd Browseragent
