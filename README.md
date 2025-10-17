@@ -105,7 +105,7 @@ bash deploy_vllm.sh /path/to/your/model
 
 #### 5. **Data generation and model evaluation:**
 
-For SFT data generation
+(1) For SFT data generation
 
 ```bash
 Terminal 2:
@@ -129,7 +129,7 @@ python swift_switch.py /path/to/your/previous_step_output_file /path/to/your/out
 ```
 
 
-For RFT data generation
+(2) For RFT data generation
 
 ```bash
 Terminal 2:
@@ -152,7 +152,7 @@ python judge_rft.py /path/to/your/sft_data_path /path/to/your/previous_step_outp
 python swift_switch.py /path/to/your/previous_step_output_file /path/to/your/output_file
 ```
 
-For model evaluation
+(3) For model evaluation
 
 ```bash
 Terminal 2:
