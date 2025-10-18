@@ -163,7 +163,7 @@ bash verl-tool\examples\train\wikiRL\wikiRL_server.sh
 Terminal 3:
 conda activate browseragent
 cd Browseragent
-python run_model.py
+python run_model.py /path/to/your/benchmark_path
 ```
 
 Then you can run the following code to calculate the rule-based accuracy.
@@ -171,8 +171,16 @@ Then you can run the following code to calculate the rule-based accuracy.
 ```bash
 conda activate browseragent
 cd Browseragent
-python val_answer.py
+python val_answer.py /path/to/your/benchmark_path /path/to/your/previous_step_output_file
 ```
+
+Then you can run the following code to calculate the model-based accuracy.
+```bash
+conda activate browseragent
+cd Browseragent
+python val_answer_model_based.py /path/to/your/benchmark_path /path/to/your/previous_step_output_file /path/to/your/output_file
+```
+
 
 ### Citation
 
