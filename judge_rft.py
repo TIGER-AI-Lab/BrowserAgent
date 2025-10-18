@@ -51,7 +51,7 @@ def same(question, gt, ans):
     # claude
     answer_claude = get_response(prompt, model="claude-4-opus-20250514")
 
-    if "yes" in answer_gpt:
+    if "yes" in answer_gpt and "yes" in answer_gemini and "yes" in answer_claude:
         return 1
     else:
         return 0
