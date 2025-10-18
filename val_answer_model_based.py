@@ -6,40 +6,55 @@ import asyncio
 import time
 from collections import deque
 from openai import OpenAI
+import argparse
 
-# 读取系统 prompt
+parser = argparse.ArgumentParser(description="Run multi-turn response generation with customizable file paths.")
+parser.add_argument('--data_path', type=str, 
+                    default='', 
+                    help='Path to the data file (e.g., /path/to/train.parquet)')
+parser.add_argument('--gen_file', type=str, 
+                    default='', 
+                    help='Path to the gen_file')
+parser.add_argument('--output_file', type=str, 
+                    default='./test.jsonl', 
+                    help='Output file path for writing the data (e.g., /path/to/output.jsonl)')
+args = parser.parse_args()
+
+
+
+
 with open("sys_eval_prompt.txt","r",encoding="utf-8") as f:
     eval_prompt = f.read()
 
-# 设置环境变量
+
 os.environ['OPENAI_API_KEY'] = ""
 
 client = OpenAI(base_url="https://api.openai.com/v1/")
 
-# ----------------- 限速器 -----------------
+
 class RateLimiter:
     def __init__(self, max_calls, period):
-        self.max_calls = max_calls   # 最大调用次数
-        self.period = period         # 时间窗口（秒）
-        self.calls = deque()         # 保存调用时间戳
+        self.max_calls = max_calls  
+        self.period = period        
+        self.calls = deque()        
         self.lock = asyncio.Lock()
 
     async def acquire(self):
         async with self.lock:
             now = time.time()
-            # 移除窗口外的调用
+            
             while self.calls and self.calls[0] <= now - self.period:
                 self.calls.popleft()
             if len(self.calls) >= self.max_calls:
-                # 需要等待
+               
                 sleep_time = self.period - (now - self.calls[0])
                 await asyncio.sleep(sleep_time)
             self.calls.append(time.time())
 
-# 每分钟最多 50 次
+
 rate_limiter = RateLimiter(50, 60)
 
-# ----------------- 请求函数 -----------------
+
 def get_response(prompt , model = "gpt-4.1", temperature = 0):
     response = client.chat.completions.create(
         model = model,
@@ -49,13 +64,13 @@ def get_response(prompt , model = "gpt-4.1", temperature = 0):
     )
     return response.choices[0].message.content
 
-# 异步封装
+
 async def same(question, gt, ans, sem, save_writer):
     prompt = eval_prompt.format(question, gt, ans)
 
     async def run(model):
-        async with sem:  # 限制并发
-            await rate_limiter.acquire()  # 限制速率
+        async with sem:  
+            await rate_limiter.acquire()  
             return await asyncio.to_thread(get_response, prompt, model)
 
     answer_gpt, answer_gemini, answer_claude = await asyncio.gather(
@@ -66,7 +81,7 @@ async def same(question, gt, ans, sem, save_writer):
 
     print(answer_claude, answer_gemini, answer_gpt)
 
-    # 保存结果
+  
     save_writer.write({
         "question": question,
         "ground_truth": gt,
@@ -76,34 +91,33 @@ async def same(question, gt, ans, sem, save_writer):
         "claude-3-7-sonnet-20250219": answer_claude
     })
 
-    # 修改判断逻辑：只要有 2 个 "yes" 就算正确
+    
     yes_count = sum("yes" in x.lower() for x in [answer_claude, answer_gemini, answer_gpt])
     if yes_count >= 2:
         return 1
     return 0
 
-# ---------------- 主逻辑 ----------------
+
 async def main():
-    data_path = "test.parquet"
-    data_df = pd.read_parquet(data_path)
+    data_df = pd.read_parquet(args.data_path)
 
     gt_answer = {
         row["extra_info"]["question"]: row["extra_info"]["selected_answer"]
         for _, row in data_df.iterrows()
     }
 
-    gen_file = 'nq_main.jsonl'
-    with jsonlines.open(gen_file) as reader:   
+
+    with jsonlines.open(args.gen_file) as reader:   
         gen_data = list(reader)
 
     steps = 0
     suc = 0
     emp = 0
 
-    sem = asyncio.Semaphore(10)  # 限制同时最多 10 并发
+    sem = asyncio.Semaphore(10)
 
-    # 打开结果保存文件
-    with jsonlines.open("results.jsonl", mode="w") as save_writer:
+  
+    with jsonlines.open(args.output_file, mode="w") as save_writer:
 
         async def process(data):
             nonlocal suc, steps, emp
