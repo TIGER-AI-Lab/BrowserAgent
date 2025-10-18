@@ -7,11 +7,12 @@ from typing import List, Dict, Any
 import requests
 from datetime import datetime
 from concurrent.futures import ThreadPoolExecutor, as_completed
+import argparse
 
 lock=threading.Lock()
 api_key = "sk-proj-1234567890"
 client = OpenAI(api_key = api_key, base_url= "http://localhost:5001/v1")
-with open("/home/yutao/brosweragent/mini_webarena/system_prompt_with_history_info.txt","r",encoding = "utf-8") as f:
+with open("system_prompt_with_history_info.txt","r",encoding = "utf-8") as f:
     system_prompt = f.read()
 
 def call_tool_server(trajectory_ids: List[str], actions: List[str], finish: List[bool], **kwargs: Dict[str, List[Any]]) -> Dict[str, Any]:
@@ -167,24 +168,25 @@ def Get_multi_turn_response(question, answer):
 
     write_a_data(action_list)
 
-# data_path="/home/yutao/dataset/BrowserAgent/benchmark/wiki_hotpotqa_new/data/dev-00000-of-00001.parquet" # hotpot 2417
-# data_path="/home/zhiheng/WikiRL/ragen/env/wiki/data/puzzle/test.parquet" # nq 3610
-# data_path="/home/yutao/dataset/wiki_data/musique/dev.parquet" # mus 2417
-# data_path="/home/yutao/dataset/wiki_data/bamboogle/test.parquet" # bam 125
-# data_path="/home/yutao/dataset/wiki_data/2wiki/dev.parquet" # 2wiki 12576
-# data_path="/home/yutao/dataset/wiki_data/popqa/test.parquet" # pop 14267
 
 max_threads = 64 
 number_to_process = 99999
 
 def process_single_item(row):
-    """处理单个数据项的包装函数"""
+    
     question = row["extra_info"]["question"]
     gt = row["extra_info"]["selected_answer"]
     return Get_multi_turn_response(question, gt)
 
 if __name__ == "__main__":
-    data_df = pd.read_parquet(data_path)
+
+    parser = argparse.ArgumentParser(description="Run multi-turn response generation with customizable file paths.")
+    parser.add_argument('--data_path', type=str, 
+                        default='', 
+                        help='Path to the data file (e.g., /path/to/train.parquet)')
+    args = parser.parse_args()
+
+    data_df = pd.read_parquet(args.data_path)
     data_df = data_df.sample(frac=1, random_state=42).reset_index(drop=True)
     
     data_to_process = data_df.head(number_to_process)
