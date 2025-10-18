@@ -8,24 +8,16 @@ import requests
 from datetime import datetime
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
-# import debugpy
-# try:
-#     # 5678 is the default attach port in the VS Code debug configurations. Unless a host and port are specified, host defaults to 127.0.0.1
-#     debugpy.listen(("localhost", 9501))
-#     print("Waiting for debugger attach")
-#     debugpy.wait_for_client()
-# except Exception as e:
-#     pass
 
 lock=threading.Lock()
 api_key = "sk-proj-1234567890"
-client = OpenAI(api_key = api_key, base_url= "http://localhost:5004/v1")
+client = OpenAI(api_key = api_key, base_url= "http://localhost:5001/v1")
 with open("/home/yutao/WikiRL-main/data_sync/system_prompt_click_nourl.txt","r",encoding = "utf-8") as f:
     system_prompt = f.read()
 
 def call_tool_server(trajectory_ids: List[str], actions: List[str], finish: List[bool], **kwargs: Dict[str, List[Any]]) -> Dict[str, Any]:
     """querying the tool server for the observation and done flag using aiohttp"""
-    env_url = "http://localhost:30814/get_observation"
+    env_url = "http://localhost:30810/get_observation"
     server_url = env_url
     # prepare payload
     extra_fields = [{
@@ -86,7 +78,7 @@ def generate_filename():
     now = datetime.now()
     return f"{now.strftime('%Y%m%d_%H%M%S')}_webarena_results.jsonl"
 
-# 全局文件名，在程序开始时初始化
+
 global_filename = None
 
 def write_a_data(action_list, filename=None):
@@ -95,8 +87,8 @@ def write_a_data(action_list, filename=None):
         if global_filename is None:
             global_filename = generate_filename()
         filename = global_filename
+
     
-    # 将整个轨迹作为一个JSON对象
     trajectory_data = {
         "trajectory": action_list,
         "trajectory_length": len(action_list)
@@ -106,12 +98,7 @@ def write_a_data(action_list, filename=None):
     with open(filename, "a", encoding="utf-8") as fw:
         fw.write(json.dumps(trajectory_data, ensure_ascii=False) + "\n")
     lock.release()
-# def write_a_data(input,output):
-#     written_data = {"input_seq":input,"output_seq":output}
-#     lock.acquire()
-#     with open("tmp.jsonl","a",encoding = "utf-8") as fw:
-#         fw.write(json.dumps(written_data,ensure_ascii=False) + "\n")
-#     lock.release()
+
 
 import uuid
 
@@ -126,7 +113,7 @@ def Get_multi_turn_response(question, answer):
     error_msg = ""
     
     try:
-        # 初始化环境
+        
         jsoned_data = call_tool_server([tar_id], [''], [False])
         obs = jsoned_data['observations'][0]
         
@@ -147,56 +134,50 @@ def Get_multi_turn_response(question, answer):
                 
                 action_list.append({"input_seq": prompt, "output_seq": response})
                 
-                # 调用工具服务器
+                
                 jsoned_data = call_tool_server([tar_id], [response], [False])
                 obs = jsoned_data['observations'][0]
                 
                 if "stop" in last_command:
-                    # 结束轨迹
+                    
                     call_tool_server([tar_id], [response], [True])
                     break
                     
             except Exception as e:
                 is_error = True
                 error_msg = str(e)
-                print(f"步骤 {i} 出现错误: {e}")
+                print(f" {i}, {e}")
                 break
                 
     except Exception as e:
         raise e
         is_error = True
         error_msg = str(e)
-        print(f"初始化或整体执行出现错误: {e}")
+        print(f"{e}")
     
-    # 在轨迹末尾添加错误信息
+    
     if action_list:
         action_list[-1]["is_error"] = is_error
         action_list[-1]["error_msg"] = error_msg
     else:
-        # 如果没有任何动作，也要记录错误
+        
         action_list.append({
             "input_seq": f"question: {question}",
-            "output_seq": "初始化失败",
+            "output_seq": "error",
             "is_error": is_error,
             "error_msg": error_msg
         })
     
-    # 整个轨迹结束后统一落盘
+    
     write_a_data(action_list)
 
-# data_path="/home/yutao/dataset/wiki_hotpotqa_new/data/dev-00000-of-00001.parquet" # hotpot
-# data_path="/home/zhiheng/WikiRL/ragen/env/wiki/data/puzzle/test.parquet" # nq
-# data_path="/home/yutao/dataset/wiki_triviaqa/data/dev-00000-of-00001.parquet" # tri
-# data_path="/home/yutao/dataset/wiki_data/musique/dev.parquet" # mus
-data_path="/home/yutao/dataset/wiki_data/bamboogle/test.parquet" # bam
-# data_path="/home/yutao/dataset/wiki_data/2wiki/dev.parquet" # 2wiki
-# data_path="/home/yutao/dataset/wiki_data/popqa/test.parquet" # pop
-# data_path="/home/yutao/dataset/wiki_data/bamboogle/test.parquet" #bam
-max_threads = 64  # 降低并发数量，避免资源过度消耗
+# data_path="" 
+
+max_threads = 64  
 number_to_process = 99999
 
 def process_single_item(row):
-    """处理单个数据项的包装函数"""
+    
     question = row["extra_info"]["question"]
     gt = row["extra_info"]["selected_answer"]
     return Get_multi_turn_response(question, gt)
@@ -206,30 +187,30 @@ if __name__ == "__main__":
     data_df = data_df.sample(frac=1, random_state=42).reset_index(drop=True)
     data_df = data_df[:1000]
     
-    # 限制处理的数据量
+   
     data_to_process = data_df.head(number_to_process)
     
-    print(f"开始处理 {len(data_to_process)} 个数据项，使用 {max_threads} 个线程")
+    print(f" {len(data_to_process)} , {max_threads}")
     
-    # 使用线程池进行并发处理
+    
     with ThreadPoolExecutor(max_workers=max_threads) as executor:
-        # 提交所有任务
+       
         future_to_row = {
             executor.submit(process_single_item, row): idx 
             for idx, row in data_to_process.iterrows()
         }
         
-        # 处理完成的任务
+        
         completed_count = 0
         for future in as_completed(future_to_row):
             idx = future_to_row[future]
             try:
-                result = future.result()  # 获取结果（如果需要的话）
+                result = future.result()  
                 completed_count += 1
-                if completed_count % 10 == 0:  # 每10个打印一次进度
-                    print(f"已完成 {completed_count}/{len(data_to_process)} 个任务")
+                if completed_count % 10 == 0:  
+                    print(f" {completed_count}/{len(data_to_process)} ")
             except Exception as e:
-                print(f"任务 {idx} 执行出错: {e}")
+                print(f" {idx} ,{e}")
                 completed_count += 1
     
-    print(f"所有任务完成！总计处理了 {completed_count} 个数据项")
+    print(f" {completed_count}")
