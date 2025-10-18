@@ -2,7 +2,7 @@ import pandas as pd
 import re
 import jsonlines
 from openai import OpenAI
-with open("/home/yutao/WikiRL-main/data_sync/system_eval_prompt_yt.txt","r",encoding="utf-8") as f:
+with open("sys_eval_prompt.txt","r",encoding="utf-8") as f:
     eval_prompt = f.read()
 
 api_key = ""
@@ -32,8 +32,8 @@ def same(question, gt, ans):
         return 0
 
 
-# data_path = "/home/yutao/dataset/wiki_hotpotqa_new/data/dev-00000-of-00001.parquet"
-data_path = "/home/zhiheng/WikiRL/ragen/env/wiki/data/puzzle/test.parquet"
+
+data_path = ""
 data_df = pd.read_parquet(data_path)
 gt_answer = dict()
 for i, row in data_df.iterrows():
@@ -42,7 +42,7 @@ for i, row in data_df.iterrows():
     gt = row["extra_info"]["selected_answer"]
     gt_answer[question] = gt
 
-gen_file = 'nq_main.jsonl'
+gen_file = 'nq.jsonl'
 with jsonlines.open(gen_file) as reader:   
     gen_data = list(reader)
 
