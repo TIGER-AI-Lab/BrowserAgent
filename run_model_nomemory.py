@@ -12,7 +12,7 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 lock=threading.Lock()
 api_key = "sk-proj-1234567890"
 client = OpenAI(api_key = api_key, base_url= "http://localhost:5001/v1")
-with open("/home/yutao/WikiRL-main/data_sync/system_prompt_click_nourl.txt","r",encoding = "utf-8") as f:
+with open("system_prompt_click_nourl.txt","r",encoding = "utf-8") as f:
     system_prompt = f.read()
 
 def call_tool_server(trajectory_ids: List[str], actions: List[str], finish: List[bool], **kwargs: Dict[str, List[Any]]) -> Dict[str, Any]:
