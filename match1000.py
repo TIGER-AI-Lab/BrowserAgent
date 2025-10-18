@@ -9,17 +9,12 @@ def normalize(text):
     return text
 
 
-data_path="/home/yutao/dataset/wiki_hotpotqa_new/data/dev-00000-of-00001.parquet" # hotpot
-# data_path="/home/zhiheng/WikiRL/ragen/env/wiki/data/puzzle/test.parquet" # nq
-# data_path="/home/yutao/dataset/wiki_triviaqa/data/dev-00000-of-00001.parquet" # tri
-# data_path="/home/yutao/dataset/wiki_data/musique/dev.parquet" # mus
-# data_path="/home/yutao/dataset/wiki_data/bamboogle/test.parquet" # bam
-# data_path="/home/yutao/dataset/wiki_data/2wiki/dev.parquet" # 2wiki
-# data_path = "/home/yutao/dataset/wiki_data/popqa/test.parquet"  # pop
+data_path=""
+
 
 data_df = pd.read_parquet(data_path)
 data_df = data_df.sample(frac=1, random_state=42).reset_index(drop=True)
-data_df = data_df[:43]
+data_df = data_df[:1000]
 gt_answer = dict()
 for i, row in data_df.iterrows():
     prompt = row['prompt']
@@ -27,8 +22,8 @@ for i, row in data_df.iterrows():
     gt = row["extra_info"]["selected_answer"]
     gt_answer[question] = normalize(gt)
 
-# gen_file = 'nq_main.jsonl'
-gen_file = '/home/yutao/brosweragent/mini_webarena/hotpot_main.jsonl'
+
+gen_file = 'hotpot.jsonl'
 with jsonlines.open(gen_file) as reader:
     gen_data = list(reader)
 
@@ -65,4 +60,5 @@ print(f"问题数目：{len(gt_answer)}")
 print(f"回答正确数目：{suc}")
 print(f"正确率：{suc/len(gt_answer)}")
 print(f"未回答数目：{emp}")
+
 print(f"平均步数：{steps / suc}")
