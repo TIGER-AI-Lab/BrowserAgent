@@ -1,21 +1,27 @@
 import pandas as pd
 import re
 import jsonlines
+import argparse
+
+parser = argparse.ArgumentParser(description="Run multi-turn response generation with customizable file paths.")
+parser.add_argument('--data_path', type=str, 
+                    default='', 
+                    help='Path to the data file (e.g., /path/to/train.parquet)')
+parser.add_argument('--gen_file', type=str, 
+                    default='', 
+                    help='Path to the gen_file')
+args = parser.parse_args()
+
+
 
 def normalize(text):
     text = text.upper().strip()
     text = re.sub(r'[^a-zA-Z0-9]', '', text)
     return text
 
-# data_path="/home/yutao/dataset/wiki_hotpotqa_new/data/dev-00000-of-00001.parquet" # hotpot
-# data_path="/home/zhiheng/WikiRL/ragen/env/wiki/data/puzzle/test.parquet" # nq
-# data_path="/home/yutao/dataset/wiki_triviaqa/data/dev-00000-of-00001.parquet" # tri
-data_path="/home/yutao/dataset/wiki_data/musique/dev.parquet" # mus
-# data_path="/home/yutao/dataset/wiki_data/bamboogle/test.parquet" # bam
-# data_path="/home/yutao/dataset/wiki_data/2wiki/dev.parquet" # 2wiki
-# data_path="/home/yutao/dataset/wiki_data/popqa/test.parquet" # pop
 
-data_df = pd.read_parquet(data_path)
+
+data_df = pd.read_parquet(args.data_path)
 gt_answer = dict()
 for i, row in data_df.iterrows():
     prompt = row['prompt']
@@ -23,8 +29,8 @@ for i, row in data_df.iterrows():
     gt = row["extra_info"]["selected_answer"]
     gt_answer[question] = normalize(gt)
 
-gen_file = '/home/yutao/brosweragent/mini_webarena/mus_qwen_t0.jsonl'
-with jsonlines.open(gen_file) as reader:   
+
+with jsonlines.open(args.gen_file) as reader:   
     gen_data = list(reader)
 
 steps = 0
