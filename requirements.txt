@@ -21,5 +21,6 @@ uvicorn
 fire
 transformers
 scipy
+tensordict
 opentelemetry-sdk
 opentelemetry-api
