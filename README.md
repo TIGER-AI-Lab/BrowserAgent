@@ -1,6 +1,15 @@
 # BrowserAgent
 An agent that can interact with browser to complete tasks
 
+### Resources
+
+- **Project Page:** https://tiger-ai-lab.github.io/BrowserAgent/
+- **Paper (arXiv):** https://arxiv.org/abs/2510.10666
+- **Models (HF):**
+  - https://huggingface.co/TIGER-Lab/BrowserAgent-SFT
+  - https://huggingface.co/TIGER-Lab/BrowserAgent-RFT
+- **Dataset (HF):** https://huggingface.co/datasets/TIGER-Lab/BrowserAgent-Data
+
 ### Installation
 
 
