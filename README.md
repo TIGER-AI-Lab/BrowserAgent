@@ -29,6 +29,7 @@ cd verl-tool
 pip install -e .
 pip install -e verl
 pip install vllm==0.8.4
+pip install --upgrade opentelemetry-api opentelemetry-sdk
 pip install flash-attn --no-build-isolation
 pip install -e ".[acecoder,torl]"
 pip uninstall uvloop
