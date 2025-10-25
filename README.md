@@ -22,7 +22,7 @@ cd BrowserAgent
 
 **Install the inference package:**
 ```bash
-conda create -n browseragent python=3.10
+conda create -n browseragent python=3.10.12
 conda activate browseragent
 pip install -r requirement.txt
 cd verl-tool
