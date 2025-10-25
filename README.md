@@ -32,6 +32,7 @@ pip install vllm==0.8.4
 pip install flash-attn --no-build-isolation
 pip install -e ".[acecoder,torl]"
 pip uninstall uvloop
+playwright install
 ```
 
 
