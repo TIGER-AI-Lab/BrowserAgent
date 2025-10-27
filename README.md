@@ -108,7 +108,7 @@ Download [📊 BroswerAgent-SFT](https://huggingface.co/TIGER-Lab/BrowserAgent-S
 ```bash
 Terminal 1:
 conda activate browseragent
-cd Browseragent
+cd BrowserAgent
 bash deploy_vllm.sh /path/to/your/model
 ```
 
@@ -121,12 +121,12 @@ bash deploy_vllm.sh /path/to/your/model
 ```bash
 Terminal 2:
 conda activate browseragent
-cd Browseragent
+cd BrowserAgent
 bash verl-tool\examples\train\wikiRL\wikiRL_server.sh
 
 Terminal 3:
 conda activate browseragent
-cd Browseragent
+cd BrowserAgent
 python data_generate.py /path/to/your/output_file /path/to/your/sft_data_path
 ```
 
@@ -134,7 +134,7 @@ Then you can run the following code to convert the generated data into the ms-sw
 
 ```bash
 conda activate browseragent
-cd Browseragent
+cd BrowserAgent
 python judge_sft.py /path/to/your/sft_data_path /path/to/your/previous_step_output_file /path/to/your/output_file
 python swift_switch.py /path/to/your/previous_step_output_file /path/to/your/output_file
 ```
@@ -145,12 +145,12 @@ python swift_switch.py /path/to/your/previous_step_output_file /path/to/your/out
 ```bash
 Terminal 2:
 conda activate browseragent
-cd Browseragent
+cd BrowserAgent
 bash verl-tool\examples\train\wikiRL\wikiRL_server.sh
 
 Terminal 3:
 conda activate browseragent
-cd Browseragent
+cd BrowserAgent
 python data_generate_rft.py /path/to/your/output_file /path/to/your/rft_data_path
 ```
 
@@ -158,7 +158,7 @@ Then you can run the following code to convert the generated data into the ms-sw
 
 ```bash
 conda activate browseragent
-cd Browseragent
+cd BrowserAgent
 python judge_rft.py /path/to/your/sft_data_path /path/to/your/previous_step_output_file /path/to/your/output_file
 python swift_switch.py /path/to/your/previous_step_output_file /path/to/your/output_file
 ```
@@ -168,12 +168,12 @@ python swift_switch.py /path/to/your/previous_step_output_file /path/to/your/out
 ```bash
 Terminal 2:
 conda activate browseragent
-cd Browseragent
+cd BrowserAgent
 bash verl-tool\examples\train\wikiRL\wikiRL_server.sh
 
 Terminal 3:
 conda activate browseragent
-cd Browseragent
+cd BrowserAgent
 python run_model.py /path/to/your/benchmark_path
 ```
 
@@ -181,14 +181,14 @@ Then you can run the following code to calculate the rule-based accuracy.
 
 ```bash
 conda activate browseragent
-cd Browseragent
+cd BrowserAgent
 python val_answer.py /path/to/your/benchmark_path /path/to/your/previous_step_output_file
 ```
 
 Then you can run the following code to calculate the model-based accuracy.
 ```bash
 conda activate browseragent
-cd Browseragent
+cd BrowserAgent
 python val_answer_model_based.py /path/to/your/benchmark_path /path/to/your/previous_step_output_file /path/to/your/output_file
 ```
 
