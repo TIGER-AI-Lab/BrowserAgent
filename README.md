@@ -122,7 +122,7 @@ bash deploy_vllm.sh /path/to/your/model
 Terminal 2:
 conda activate browseragent
 cd BrowserAgent
-bash verl-tool\examples\train\wikiRL\wikiRL_server.sh
+bash verl-tool/examples/train/wikiRL/wikiRL_server.sh
 
 Terminal 3:
 conda activate browseragent
