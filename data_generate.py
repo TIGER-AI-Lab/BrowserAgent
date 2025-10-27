@@ -41,7 +41,7 @@ HISTORY_ACTION: {}
 HISTORY_info: {}
 """
 
-def get_response(prompt , model = "gpt-4.1", temperature = 0):
+def get_response(prompt , model = "gpt-4.1", temperature = 0.5):
 
     response = client.chat.completions.create(
         model = model,
