@@ -9,6 +9,7 @@ An agent that can interact with browser to complete tasks
   - https://huggingface.co/TIGER-Lab/BrowserAgent-SFT
   - https://huggingface.co/TIGER-Lab/BrowserAgent-RFT
 - **Dataset (HF):** https://huggingface.co/datasets/TIGER-Lab/BrowserAgent-Data
+- **Seed Dataset (HF):** https://huggingface.co/datasets/TIGER-Lab/BrowserAgent-SeedData
 
 ### Installation
 
@@ -39,7 +40,7 @@ playwright install
 
 #### 2. Data preparation
 
-Download [📊 BrowserAgent-Data](https://huggingface.co/datasets/TIGER-Lab/BrowserAgent-Data) and place it in the data folder, the final structure should look like this:
+To conduct Web-Information-Seeking Task, download [📊 BrowserAgent-SeedData](https://huggingface.co/datasets/TIGER-Lab/BrowserAgent-SeedData) and place it in the data folder, the final structure should look like this:
 
 ```
 benchmark
@@ -162,6 +163,8 @@ cd BrowserAgent
 python judge_rft.py /path/to/your/sft_data_path /path/to/your/previous_step_output_file /path/to/your/output_file
 python swift_switch.py /path/to/your/previous_step_output_file /path/to/your/output_file
 ```
+
+Alternatively, you can also get our SFT and RFT Dataset via https://huggingface.co/datasets/TIGER-Lab/BrowserAgent-Data
 
 (3) For model evaluation
 
